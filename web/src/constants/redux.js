@@ -1,0 +1,5 @@
+export const CREATE_POST = 'CREATE_POST'
+export const DELETE_POST = 'DELETE_POST'
+export const LIST_POSTS = 'LIST_POSTS'
+export const ERROR = 'ERROR'
+export const LOADING = 'LOADING'
