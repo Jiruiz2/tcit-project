@@ -1,6 +1,14 @@
-import { CREATE_POST, DELETE_POST, ERROR, LIST_POSTS, LOADING } from '../constants/redux'
+import {
+  CREATE_POST,
+  DELETE_POST,
+  ERROR,
+  FILTER_POSTS,
+  LIST_POSTS,
+  LOADING
+} from '../constants/redux'
 
 const initialState = {
+  filteredPosts: [],
   posts: [],
   loading: false,
   error: null
@@ -18,6 +26,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        filteredPosts: action.payload,
         posts: action.payload,
         error: null
       }
@@ -25,15 +34,20 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        posts: [...state.posts, action.payload],
+        filteredPosts: [...state.filteredPosts, action.payload],
         error: null
       }
     case DELETE_POST:
       return {
         ...state,
         loading: false,
-        posts: state.posts.filter(post => post.id !== action.payload.id),
+        filteredPosts: state.filteredPosts.filter(post => post.id !== action.payload.id),
         error: null
+      }
+    case FILTER_POSTS:
+      return {
+        ...state,
+        filteredPosts: state.posts.filter(post => post.name.includes(action.payload))
       }
     case ERROR:
       return {

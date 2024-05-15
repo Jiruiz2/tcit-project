@@ -1,17 +1,19 @@
 import React from 'react'
 
 import CreatePost from './components/CreatePost'
-import DeletePost from './components/DeletePost'
-import Filter from './components/Filter'
 import ListPosts from './components/ListPosts'
 
-const App = () => (
-  <div>
-    <Filter />
-    <ListPosts />
-    <CreatePost />
-    <DeletePost />
-  </div>
-)
+const App = () => {
+  const container = {
+    margin: '3rem 2rem'
+  }
+
+  return (
+    <div style={container}>
+      <ListPosts />
+      <CreatePost />
+    </div>
+  )
+}
 
 export default App

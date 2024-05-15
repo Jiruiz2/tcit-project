@@ -1,13 +1,25 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import { listPosts } from '../actions/posts'
+import { deletePost, filterPosts, listPosts } from '../actions/posts'
+import Table from './Table'
+import Button from './Button'
+import TableRow from './TableRow'
+import SearchBar from './SearchBar'
 
 const PostsTable = (props) => {
   useEffect(() => {
-    console.log('🚀 ~ file: ListPosts.js:6 ~ useEffect ~ props', props)
     props.listPosts()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const deletePost = (postId) => {
+    props.deletePost(postId)
+  }
+
+  const filterPosts = (event) => {
+    props.filterPosts(event.target.value)
+  }
 
   if (props.loading) {
     return <div>Loading...</div>
@@ -20,24 +32,22 @@ const PostsTable = (props) => {
   return (
     <div>
       <h2>Posts</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {props.posts?.map(post => (
-            <tr key={post.id}>
-              <td>{post.id}</td>
-              <td>{post.name}</td>
-              <td>{post.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      <SearchBar onChange={filterPosts} label="Filter" />
+
+      <Table
+        headers={['ID', 'Name', 'Description', 'Action']}>
+        {props.filteredPosts?.map(post => (
+          <TableRow
+            key={post.id}
+            items={[
+              post.id,
+              post.name,
+              post.description,
+              <Button onClick={() => deletePost(post.id)}>Delete</Button>
+            ]}/>
+        ))}
+      </Table>
     </div>
   )
 }
@@ -47,7 +57,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  listPosts: () => dispatch(listPosts())
+  listPosts: () => dispatch(listPosts()),
+  deletePost: (postId) => dispatch(deletePost(postId)),
+  filterPosts: (filterValue) => dispatch(filterPosts(filterValue))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostsTable)
