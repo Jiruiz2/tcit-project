@@ -1,32 +1,20 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 
-import { listPosts, setLoading } from '../redux/actions'
+import { listPosts } from '../actions/posts'
 
-const PostsTable = () => {
-  const dispatch = useDispatch()
-  const posts = useSelector(state => state.posts)
-  const loading = useSelector(state => state.loading)
-  const error = useSelector(state => state.error)
-
+const PostsTable = (props) => {
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(setLoading())
+    console.log('🚀 ~ file: ListPosts.js:6 ~ useEffect ~ props', props)
+    props.listPosts()
+  }, [])
 
-      const posts = await listPosts()
-
-      dispatch(posts)
-    }
-
-    fetchData()
-  }, [dispatch])
-
-  if (loading) {
+  if (props.loading) {
     return <div>Loading...</div>
   }
 
-  if (error) {
-    return <div>Error: {error}</div>
+  if (props.error) {
+    return <div>Error: {props.error}</div>
   }
 
   return (
@@ -41,7 +29,7 @@ const PostsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {posts.map(post => (
+          {props.posts?.map(post => (
             <tr key={post.id}>
               <td>{post.id}</td>
               <td>{post.name}</td>
@@ -54,4 +42,12 @@ const PostsTable = () => {
   )
 }
 
-export default PostsTable
+const mapStateToProps = (state) => ({
+  ...state.postsReducer
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  listPosts: () => dispatch(listPosts())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostsTable)

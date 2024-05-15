@@ -1,9 +1,16 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore, Tuple } from '@reduxjs/toolkit'
+import logger  from 'redux-logger'
+import { thunk } from 'redux-thunk'
 
-import reducers from './reducers'
+import postsReducer from './reducers/posts'
+
+const rootReducer = combineReducers({
+  postsReducer
+})
 
 const store = configureStore({
-  reducers
+  reducer: rootReducer,
+  middleware: () => new Tuple(thunk, logger)
 })
 
 export default store

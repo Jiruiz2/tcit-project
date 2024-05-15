@@ -2,11 +2,9 @@ import { CREATE_POST, DELETE_POST, ERROR, LIST_POSTS, LOADING } from '../constan
 import { postsApi } from '../config/axios'
 import { getErrorMessage } from '../utils/errorUtil'
 
-export const setLoading = () => {
-  return {
-    type: LOADING
-  }
-}
+export const setLoading = () => ({
+  type: LOADING
+})
 
 export const createPost = async (post) => {
   try {
@@ -40,18 +38,21 @@ export const deletePost = async (id) => {
   }
 }
 
-export const listPosts = async () => {
-  try {
-    const response = await postsApi.get('/posts')
-  
-    return {
-      type: LIST_POSTS,
-      payload: response.data
-    }
-  } catch (error) {
-    return {
-      type: ERROR,
-      payload: getErrorMessage(error)
-    }
+export const listPosts = () => (
+  (dispatch) => {
+    dispatch(setLoading)
+
+    postsApi.get('/posts').then(postsResponse => {
+      console.log('🚀 ~ file: posts.js:46 ~ postsApi.get ~ postsResponse:', postsResponse)
+      dispatch({
+        type: LIST_POSTS,
+        payload: postsResponse.data
+      })
+    }).catch(error => {
+      dispatch({
+        type: ERROR,
+        payload: getErrorMessage(error)
+      })
+    })
   }
-}
+)
